@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>login-your-account</title>
+    <style>
+        body {
+    background-image: url("whitehouse.jpg");
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-color: rgba(255, 255, 255, 0.5); /* White color with 50% opacity */
+    background-blend-mode: overlay;
+    margin: 0; /* Ensure no margin issues */
+    height: 100vh; /* Full viewport height */
+}
+
+.login {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.signin {
+    padding: 20px;
+    border-radius: 10px;
+    border: 5px solid white;
+    height: 500px;
+    width: 500px;
+    background: rgba(230, 225, 225, 0.8); /* Faded background for the login box */
+    backdrop-filter: blur(10px); /* Optional: Adds a blur effect */
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.2); /* Optional: Adds a subtle shadow */
+}
+
+h2 {
+    font-size: 50px;
+    text-align: center;
+}
+
+h3 {
+    font-size: 26px;
+}
+
+.muskan {
+    background-color: transparent; /* Make the background transparent */
+    border: 2px solid black; /* Add a black border */
+    color: black; /* Set the text color to black */
+    padding: 10px; /* Add padding inside the input */
+    width: 100%; /* Make the input full-width */
+    box-sizing: border-box; /* Include padding in the width */
+    font-size: 16px;
+}
+
+button {
+    position: relative;
+    left: 170px;
+    font-size: 30px;
+    background-color: rgb(186, 204, 210);
+}
+
+a {
+    position: relative;
+    left: 159px;
+}
+
+.hidden {
+    display: none;
+}
+
+.image-container {
+    position: absolute;
+    top: 100px;
+    left: 150px;
+}
+
+.image-container img {
+    max-width: 300px;
+    height: auto;
+    border-radius: 10px;
+}
+
+.custom-hr {
+    border: none;
+    border-top: 3px solid black;
+    margin: 10px 0;
+}
+        
+
+    </style>
+</head>
+<body>
+    <!-- semantic tags  -->
+     <div class="login">
+        <div class="signin">
+            <h2>sign-in</h2>
+            <hr class="custom-hr">
+            <h3>Email</h3>
+            <input type="email" placeholder="email or username" class="muskan"><br><hr class="custom-hr">
+            <h3>Password</h3>
+            <input type="text" placeholder="string password" class="muskan"><br><hr class="custom-hr"><br>
+            <button id="submit-btn">SUBMIT</button>
+            <!-- //create a link here for signup option... -->
+              <br><br>
+              <a href="signup2.html">Sign-up (if no account)</a><br>
+
+             
+
+        </div>
+        <div id="image-container" class="hidden">
+            <img src="https://i.pinimg.com/236x/da/60/0d/da600d88745c1c4eaed959c7f4dc29b2.jpg" alt="Submitted Image">
+        </div>
+     </div>
+     <script>
+        document.getElementById('submit-btn').addEventListener('click', function() {
+            // Display the image container
+            document.getElementById('image-container').classList.remove('hidden');
+        });
+    </script>
+    
+</body>
+</html> 

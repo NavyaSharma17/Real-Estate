@@ -1,0 +1,326 @@
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Real Estate CRUD Operations</title>
+    <style>
+        /* Add some basic styling */
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .property {
+            border: 1px solid #ddd;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        .property h3 {
+            margin: 0;
+        }
+        .property p {
+            margin: 5px 0;
+        }
+        .buttons {
+            margin-top: 10px;
+        }
+        .buttons button {
+            margin-right: 5px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Real Estate Properties</h1>
+    
+    <div id="properties"></div>
+
+    <h2>Add New Property</h2>
+    <form id="propertyForm">
+        <input type="text" id="title" placeholder="Title" required>
+        <input type="number" id="price" placeholder="Price" required>
+        <input type="text" id="description" placeholder="Description" required>
+        <input type="text" id="location" placeholder="Location" required>
+        <button type="submit">Add Property</button>
+    </form>
+
+    <script>
+        const propertiesDiv = document.getElementById('properties');
+        const propertyForm = document.getElementById('propertyForm');
+
+        // Fetch and display properties
+        async function fetchProperties() {
+            const res = await fetch('/api/realestate');
+            const properties = await res.json();
+
+            propertiesDiv.innerHTML = '';
+            properties.forEach(property => {
+                propertiesDiv.innerHTML += `
+                    <div class="property" data-id="${property._id}">
+                        <h3>${property.title}</h3>
+                        <p>Price: $${property.price}</p>
+                        <p>${property.description}</p>
+                        <p>Location: ${property.location}</p>
+                        <div class="buttons">
+                            <button onclick="deleteProperty('${property._id}')">Delete</button>
+                            <button onclick="editProperty('${property._id}')">Edit</button>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        // Add a new property
+        propertyForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const newProperty = {
+                title: document.getElementById('title').value,
+                price: document.getElementById('price').value,
+                description: document.getElementById('description').value,
+                location: document.getElementById('location').value
+            };
+
+            await fetch('/api/realestate', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(newProperty)
+            });
+
+            propertyForm.reset();
+            fetchProperties();
+        });
+
+        // Delete a property
+        async function deleteProperty(id) {
+            await fetch(`/api/realestate/${id}`, {
+                method: 'DELETE'
+            });
+            fetchProperties();
+        }
+
+        // Edit a property
+        async function editProperty(id) {
+            const property = document.querySelector(`[data-id='${id}']`);
+            const title = property.querySelector('h3').innerText;
+            const price = property.querySelector('p:nth-of-type(1)').innerText.replace('Price: $', '');
+            const description = property.querySelector('p:nth-of-type(2)').innerText;
+            const location = property.querySelector('p:nth-of-type(3)').innerText.replace('Location: ', '');
+
+            // Populate the form with existing property details
+            document.getElementById('title').value = title;
+            document.getElementById('price').value = price;
+            document.getElementById('description').value = description;
+            document.getElementById('location').value = location;
+
+            // Change form submission to handle update instead of add
+            propertyForm.removeEventListener('submit', addProperty);
+            propertyForm.addEventListener('submit', function updateProperty(e) {
+                e.preventDefault();
+                updateExistingProperty(id);
+            });
+
+            // Scroll up to the form
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Update an existing property
+        async function updateExistingProperty(id) {
+            const updatedProperty = {
+                title: document.getElementById('title').value,
+                price: document.getElementById('price').value,
+                description: document.getElementById('description').value,
+                location: document.getElementById('location').value
+            };
+
+            await fetch(`/api/realestate/${id}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(updatedProperty)
+            });
+
+            // Reset form and revert to add mode
+            propertyForm.reset();
+            propertyForm.addEventListener('submit', addProperty);
+            fetchProperties();
+        }
+
+        // Initial fetch
+        fetchProperties();
+    </script>
+</body>
+</html> -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Property Management</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            padding: 0;
+        }
+        .property {
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            background-color: #c59999;
+        }
+        .buttons {
+            margin-top: 10px;
+        }
+        .buttons button {
+            padding: 5px 10px;
+            margin-right: 5px;
+            cursor: pointer;
+            border-radius: 3px;
+            border: none;
+            color: rgb(237, 188, 188);
+        }
+        .buttons button:hover {
+            opacity: 0.9;
+        }
+        .buttons .delete-button {
+            background-color: #e74c3c;
+        }
+        .buttons .edit-button {
+            background-color: #3498db;
+        }
+        form {
+            margin-bottom: 20px;
+        }
+        form input {
+            display: block;
+            margin-bottom: 10px;
+            padding: 8px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        form .buttons {
+            text-align: right;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Property Management</h1>
+
+    <form id="propertyForm_1">
+        <input type="text" placeholder="Title">
+        <input type="number" placeholder="Price">
+        <input type="text" placeholder="Description">
+        <input type="text" placeholder="Location">
+        <div class="buttons">
+            <button type="button" onclick="addProperty(this)">Add Property</button>
+        </div>
+    </form>
+
+    <div id="properties"></div>
+
+    <script>
+        // Function to add a property
+        function addProperty(button) {
+            const form = button.closest('form');
+            const title = form.querySelector('input[placeholder="Title"]').value;
+            const price = form.querySelector('input[placeholder="Price"]').value;
+            const description = form.querySelector('input[placeholder="Description"]').value;
+            const location = form.querySelector('input[placeholder="Location"]').value;
+
+            const propertyId = 'property_' + new Date().getTime(); // Unique ID based on timestamp
+
+            const propertyHTML = `
+                <div id="${propertyId}" class="property">
+                    <h3>${title}</h3>
+                    <p>Price: $${price}</p>
+                    <p>${description}</p>
+                    <p>Location: ${location}</p>
+                    <div class="buttons">
+                        <button class="delete-button" onclick="deleteProperty('${propertyId}')">Delete</button>
+                        <button class="edit-button" onclick="editProperty('${propertyId}')">Edit</button>
+                    </div>
+                </div>
+            `;
+
+            document.getElementById('properties').insertAdjacentHTML('beforeend', propertyHTML);
+
+            // Clear the form fields
+            form.reset();
+        }
+
+        // Function to delete a property
+        function deleteProperty(id) {
+            const propertyToDelete = document.getElementById(id);
+            if (propertyToDelete) {
+                propertyToDelete.remove();
+            } else {
+                console.error(`Property with ID ${id} not found for deletion.`);
+            }
+        }
+
+        // Function to edit a property
+        function editProperty(id) {
+            const property = document.getElementById(id);
+            if (!property) {
+                console.error(`Property with ID ${id} not found for editing.`);
+                return;
+            }
+
+            const title = property.querySelector('h3').innerText;
+            const price = property.querySelector('p:nth-of-type(1)').innerText.replace('Price: $', '');
+            const description = property.querySelector('p:nth-of-type(2)').innerText;
+            const location = property.querySelector('p:nth-of-type(3)').innerText.replace('Location: ', '');
+
+            // Populate the form with existing property details
+            const form = document.getElementById('propertyForm_1');
+            form.querySelector('input[placeholder="Title"]').value = title;
+            form.querySelector('input[placeholder="Price"]').value = price;
+            form.querySelector('input[placeholder="Description"]').value = description;
+            form.querySelector('input[placeholder="Location"]').value = location;
+
+            // Change form submission to handle update instead of add
+            form.querySelector('.buttons button:first-child').innerText = 'Update Property';
+            form.querySelector('.buttons button:first-child').onclick = function() {
+                updateExistingProperty(id);
+            };
+
+            // Scroll up to the form
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Function to update an existing property
+        function updateExistingProperty(id) {
+            const property = document.getElementById(id);
+            if (!property) {
+                console.error(`Property with ID ${id} not found for updating.`);
+                return;
+            }
+
+            const form = document.getElementById('propertyForm_1');
+            const updatedTitle = form.querySelector('input[placeholder="Title"]').value;
+            const updatedPrice = form.querySelector('input[placeholder="Price"]').value;
+            const updatedDescription = form.querySelector('input[placeholder="Description"]').value;
+            const updatedLocation = form.querySelector('input[placeholder="Location"]').value;
+
+            // Update the property details in the DOM
+            property.querySelector('h3').innerText = updatedTitle;
+            property.querySelector('p:nth-of-type(1)').innerText = `Price: $${updatedPrice}`;
+            property.querySelector('p:nth-of-type(2)').innerText = updatedDescription;
+            property.querySelector('p:nth-of-type(3)').innerText = `Location: ${updatedLocation}`;
+
+            // Reset form and revert to add mode
+            form.reset();
+            form.querySelector('.buttons button:first-child').innerText = 'Add Property';
+            form.querySelector('.buttons button:first-child').onclick = function() {
+                addProperty(this);
+            };
+        }
+    </script>
+
+</body>
+</html>
